@@ -27,6 +27,8 @@
         },
         "files":
         [
+            "src/oihana/certbot/helpers/getCertbotDomains.php",
+            "src/oihana/certbot/helpers/parseCertbotCertificates.php"
         ]
     },
     "autoload-dev": {
