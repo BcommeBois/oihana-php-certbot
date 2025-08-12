@@ -1,0 +1,57 @@
+{
+    "name" : "oihana/php-certbot" ,
+    "type" : "library" ,
+    "description" : "The Oihana PHP Cerbot library" ,
+    "keywords" : [ "php" , "cerbot" , "command" , "console" ] ,
+    "homepage" : "https://github.com/BcommeBois/oihana-php-certbot" ,
+    "license" : "MPL-2.0" ,
+    "authors" : [
+        {
+            "name" : "Marc Alcaraz" ,
+            "email" : "marc@ooop.fr" ,
+            "homepage" : "https://www.ooop.fr" ,
+            "role" : "Project Founder, Lead Developer."
+        }
+    ],
+    "support": {
+        "email": "marc@ooop.fr"
+    },
+    "scripts": {
+        "console": "bin/console",
+        "test": "./vendor/bin/phpunit"
+    },
+    "autoload": {
+        "psr-4" :
+        {
+            "oihana\\" : "src/oihana"
+        },
+        "files":
+        [
+        ]
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "tests\\" : "tests"
+        }
+    },
+    "require": {
+        "php": ">=8.4",
+        "oihana/php-core": "dev-main",
+        "oihana/php-system": "dev-main",
+        "oihana/php-files": "dev-main",
+        "oihana/php-schema": "dev-main",
+        "oihana/php-standards": "dev-main",
+        "oihana/php-commands": "dev-main"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^12",
+        "nunomaduro/collision": "^8.8",
+        "mikey179/vfsstream": "^1.6",
+        "phpdocumentor/shim": "^3.8"
+    },
+    "config": {
+        "allow-plugins": {
+            "phpdocumentor/shim": true
+        }
+    }
+}
