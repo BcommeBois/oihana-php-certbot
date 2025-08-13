@@ -9,7 +9,7 @@ use DateTimeInterface;
 use DateTimeZone;
 use Throwable;
 
-use oihana\reflections\traits\ConstantsTrait;
+use oihana\reflect\traits\ConstantsTrait;
 
 use org\schema\creativeWork\DigitalDocument;
 

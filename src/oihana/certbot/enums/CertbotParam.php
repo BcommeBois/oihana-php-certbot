@@ -2,7 +2,7 @@
 
 namespace oihana\certbot\enums;
 
-use oihana\reflections\traits\ConstantsTrait;
+use oihana\reflect\traits\ConstantsTrait;
 
 /**
  * The parameters of the 'certbot' cli.
