@@ -2,12 +2,14 @@
 
 namespace oihana\certbot\traits;
 
+use oihana\enums\Char;
+
+use oihana\commands\traits\CommandTrait;
+
 use oihana\certbot\enums\CertbotParam;
 use oihana\certbot\enums\CertbotSubCommand;
 use oihana\certbot\options\CertbotDeleteOptions;
 use oihana\certbot\options\CertbotOption;
-use oihana\commands\traits\CommandTrait;
-use oihana\enums\Char;
 
 /**
  * Provides support for delete a SSL certificates using the `certbot delete` command,

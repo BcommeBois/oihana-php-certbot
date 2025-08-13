@@ -3,6 +3,7 @@
 namespace oihana\certbot\helpers;
 
 use InvalidArgumentException;
+
 use function oihana\commands\helpers\assertDomain;
 
 /**

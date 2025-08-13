@@ -2,12 +2,12 @@
 
 namespace oihana\certbot\traits;
 
+use oihana\enums\Char;
+
 use oihana\certbot\enums\CertbotParam;
 use oihana\certbot\enums\CertbotSubCommand;
 use oihana\certbot\options\CertbotRevokeOptions;
 use oihana\certbot\options\CertbotOption;
-
-use oihana\enums\Char;
 
 // sudo certbot revoke $CERTDOM --cert-path /etc/letsencrypt/live/$CERT/fullchain.pem --quiet
 //

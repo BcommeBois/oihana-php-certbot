@@ -2,10 +2,11 @@
 
 namespace oihana\certbot\traits;
 
+use oihana\commands\traits\CommandTrait;
+
 use oihana\certbot\enums\CertbotParam;
 use oihana\certbot\enums\CertbotSubCommand;
 use oihana\certbot\options\CertbotCertOnlyOptions;
-use oihana\commands\traits\CommandTrait;
 
 use RuntimeException;
 
