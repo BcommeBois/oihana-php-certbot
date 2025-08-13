@@ -2,11 +2,6 @@
 
 namespace oihana\certbot\options;
 
-use oihana\certbot\options\traits\CertbotCommonOptions ;
-use oihana\commands\options\Options;
-
-use ReflectionException;
-
 /**
  * The 'certbot renew' options.
  *
