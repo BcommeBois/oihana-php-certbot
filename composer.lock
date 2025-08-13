@@ -245,12 +245,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/BcommeBois/oihana-php-commands.git",
-                "reference": "b4b23c70d912c119f65b73d3aa8bdedc27fc0d58"
+                "reference": "aecff3d95f4c60346a22bbf5dc341b0cceeda176"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/BcommeBois/oihana-php-commands/zipball/b4b23c70d912c119f65b73d3aa8bdedc27fc0d58",
-                "reference": "b4b23c70d912c119f65b73d3aa8bdedc27fc0d58",
+                "url": "https://api.github.com/repos/BcommeBois/oihana-php-commands/zipball/aecff3d95f4c60346a22bbf5dc341b0cceeda176",
+                "reference": "aecff3d95f4c60346a22bbf5dc341b0cceeda176",
                 "shasum": ""
             },
             "require": {
@@ -309,9 +309,9 @@
             "support": {
                 "email": "marc@ooop.fr",
                 "issues": "https://github.com/BcommeBois/oihana-php-commands/issues",
-                "source": "https://github.com/BcommeBois/oihana-php-commands/tree/1.0.2"
+                "source": "https://github.com/BcommeBois/oihana-php-commands/tree/1.0.3"
             },
-            "time": "2025-08-13T10:05:41+00:00"
+            "time": "2025-08-13T10:42:54+00:00"
         },
         {
             "name": "oihana/php-core",

@@ -3,7 +3,7 @@
 namespace oihana\certbot\options;
 
 use oihana\certbot\options\traits\CertbotCommonOptions ;
-use oihana\options\Options;
+use oihana\commands\options\Options;
 
 use ReflectionException;
 

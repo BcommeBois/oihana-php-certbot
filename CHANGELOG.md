@@ -11,6 +11,9 @@ and follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ---
 
+## [1.0.1] - 2025-08-13
+- Use the Options and Option classes in the oihana/commands/options package
+
 ## [1.0.0] - 2025-08-13
 
 ### Added

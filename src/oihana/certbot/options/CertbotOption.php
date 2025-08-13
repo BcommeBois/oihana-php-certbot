@@ -3,7 +3,7 @@
 namespace oihana\certbot\options;
 
 use oihana\enums\Char;
-use oihana\options\Option;
+use oihana\commands\options\Option;
 use function oihana\core\strings\hyphenate;
 
 /**
