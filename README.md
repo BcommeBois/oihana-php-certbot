@@ -173,6 +173,7 @@ This project is licensed under the [Mozilla Public License 2.0 (MPL‑2.0)](http
 ## 🔗 Related Packages
 
 - `oihana/php-core` – core helpers and utilities used by this library: `https://github.com/BcommeBois/oihana-php-core`
+- `oihana/php-exceptions` – a curated set of reusable custom exception classes for PHP: `https://github.com/BcommeBois/oihana-php-exceptions`
 - `oihana/php-reflect` – reflection and hydration utilities: `https://github.com/BcommeBois/oihana-php-reflect`
 - `oihana/php-files` – filesystem helpers: `https://github.com/BcommeBois/oihana-php-files`
 - `oihana/php-system` – common helpers of the Oihana PHP framework: `https://github.com/BcommeBois/oihana-php-system`

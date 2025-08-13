@@ -39,6 +39,7 @@
     "require": {
         "php": ">=8.4",
         "oihana/php-core": "dev-main",
+        "oihana/php-exceptions": "dev-main",
         "oihana/php-reflect": "dev-main",
         "oihana/php-enums": "dev-main",
         "oihana/php-files": "dev-main",
