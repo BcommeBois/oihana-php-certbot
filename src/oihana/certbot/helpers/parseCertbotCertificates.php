@@ -7,13 +7,14 @@ use DateMalformedStringException;
 
 use oihana\certbot\entities\CertbotCertificate;
 
+use ReflectionException;
 use function oihana\core\date\formatDateTime;
 
 /**
  * Parse a string expression and returns the list of the certbot certificates.
  *
- * @param string|null $source     The string expression to parse.
- * @param string|null $timezone   The timezone identifier (e.g., 'Europe/Paris'). Defaults to 'Europe/Paris'.
+ * @param string|null $source The string expression to parse.
+ * @param string|null $timezone The timezone identifier (e.g., 'Europe/Paris'). Defaults to 'Europe/Paris'.
  * @param string|null $dateFormat The date format string compatible with DateTime::format(). Defaults to 'Y-m-d\TH:i:s'.
  *
  * @return array The list of certificates.
@@ -49,6 +50,7 @@ use function oihana\core\date\formatDateTime;
  *
  * @throws DateInvalidTimeZoneException
  * @throws DateMalformedStringException
+ * @throws ReflectionException
  */
 function parseCertbotCertificates
 (
