@@ -172,12 +172,13 @@ This project is licensed under the [Mozilla Public License 2.0 (MPL‑2.0)](http
 
 ## 🔗 Related Packages
 
-- `oihana/php-core` – core helpers and utilities used by this library: `https://github.com/BcommeBois/oihana-php-core`
-- `oihana/php-exceptions` – a curated set of reusable custom exception classes for PHP: `https://github.com/BcommeBois/oihana-php-exceptions`
-- `oihana/php-reflect` – reflection and hydration utilities: `https://github.com/BcommeBois/oihana-php-reflect`
-- `oihana/php-files` – filesystem helpers: `https://github.com/BcommeBois/oihana-php-files`
-- `oihana/php-signals` – A fast and flexible signal/slot implementation for event-driven programming: `https://github.com/BcommeBois/oihana-php-signals`
-- `oihana/php-system` – common helpers of the Oihana PHP framework: `https://github.com/BcommeBois/oihana-php-system`
-- `oihana/php-schema` – object‑oriented implementation of the Schema.org vocabulary: `https://github.com/BcommeBois/oihana-php-schema`
-- `oihana/php-standards` – constants and helpers based on major international standards: `https://github.com/BcommeBois/oihana-php-standards`
-- `oihana/php-commands` – scriptable command-line tooling for servers and web applications: `https://github.com/BcommeBois/oihana-php-commands`
+- [`oihana/php-core`](https://github.com/BcommeBois/oihana-php-core) – core helpers and utilities used by this library
+- [`oihana/php-exceptions`](https://github.com/BcommeBois/oihana-php-exceptions) – a curated set of reusable custom exception classes for PHP
+- [`oihana/php-reflect`](https://github.com/BcommeBois/oihana-php-reflect) – reflection and hydration utilities
+- [`oihana/php-enums`](https://github.com/BcommeBois/oihana-php-enums) – enum helpers and utilities
+- [`oihana/php-files`](https://github.com/BcommeBois/oihana-php-files) – filesystem helpers
+- [`oihana/php-signals`](https://github.com/BcommeBois/oihana-php-signals) – signal/slot event system
+- [`oihana/php-system`](https://github.com/BcommeBois/oihana-php-system) – common helpers of the Oihana PHP framework
+- [`oihana/php-schema`](https://github.com/BcommeBois/oihana-php-schema) – object‑oriented implementation of the Schema.org vocabulary
+- [`oihana/php-standards`](https://github.com/BcommeBois/oihana-php-standards) – constants and helpers based on major international standards
+- [`oihana/php-commands`](https://github.com/BcommeBois/oihana-php-commands) – scriptable command-line tooling for servers and web applications
