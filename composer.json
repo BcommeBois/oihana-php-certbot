@@ -45,6 +45,7 @@
         "oihana/php-files": "dev-main",
         "oihana/php-system": "dev-main",
         "oihana/php-schema": "dev-main",
+        "oihana/php-signals": "dev-main",
         "oihana/php-standards": "dev-main",
         "oihana/php-commands": "dev-main"
     },

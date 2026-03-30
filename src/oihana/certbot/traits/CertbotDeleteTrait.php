@@ -95,7 +95,7 @@ trait CertbotDeleteTrait
 
         return $this->system
         (
-            command : CertbotSubCommand::REVOKE ,
+            command : CertbotSubCommand::DELETE ,
             args    : (string) $args ,
             silent  : $silent ,
             verbose : $verbose ,
