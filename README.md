@@ -19,7 +19,7 @@ Built on top of the [Oihana PHP Commands](https://github.com/BcommeBois/oihana-p
 
 ### Requirements
 
-- PHP 8.4+
+- PHP 8.4+, with the OpenSSL extension
 - A Unix-like environment where `certbot` is installed and available in PATH
 - Sufficient privileges to run Certbot (commands are executed with sudo)
 
@@ -142,6 +142,7 @@ Plugins and webroot:
 
 ### Helpers
 
+- `oihana\certbot\helpers\certificateKeyType(string $pem): ?string` – reads the type of key a certificate was issued for, `ECDSA` or `RSA`, from the certificate itself (the first of a chain, such as `fullchain.pem`): the words of the `Key Type:` line of `certbot certificates`.
 - `oihana\certbot\helpers\getCertbotDomains(string $domain, ?string $subdomain, bool $throw = true): ?array` – builds a safe domain list (e.g. `example.com` + `www.example.com`).
 - `oihana\certbot\helpers\parseCertbotCertificates(string $source, ?string $timezone = 'Europe/Paris', ?string $dateFormat = 'Y-m-d\\TH:i:s'): array` – parses the output of `certbot certificates` into `CertbotCertificate` instances.
 
@@ -155,6 +156,12 @@ Plugins and webroot:
 
 ```bash
 composer test
+```
+
+To measure the coverage, with Xdebug (an HTML report and a Markdown summary land in `build/coverage/`):
+
+```bash
+composer coverage:md
 ```
 
 ## 🤝 Contributing
@@ -178,7 +185,6 @@ This project is licensed under the [Mozilla Public License 2.0 (MPL‑2.0)](http
 - [`oihana/php-enums`](https://github.com/BcommeBois/oihana-php-enums) – enum helpers and utilities
 - [`oihana/php-files`](https://github.com/BcommeBois/oihana-php-files) – filesystem helpers
 - [`oihana/php-signals`](https://github.com/BcommeBois/oihana-php-signals) – signal/slot event system
-- [`oihana/php-system`](https://github.com/BcommeBois/oihana-php-system) – common helpers of the Oihana PHP framework
 - [`oihana/php-schema`](https://github.com/BcommeBois/oihana-php-schema) – object‑oriented implementation of the Schema.org vocabulary
 - [`oihana/php-standards`](https://github.com/BcommeBois/oihana-php-standards) – constants and helpers based on major international standards
 - [`oihana/php-commands`](https://github.com/BcommeBois/oihana-php-commands) – scriptable command-line tooling for servers and web applications

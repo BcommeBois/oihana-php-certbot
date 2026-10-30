@@ -18,7 +18,12 @@
     },
     "scripts": {
         "console": "bin/console",
-        "test": "./vendor/bin/phpunit"
+        "test": "./vendor/bin/phpunit",
+        "coverage": "XDEBUG_MODE=coverage ./vendor/bin/phpunit --coverage-text --coverage-clover build/coverage/clover.xml --coverage-html build/coverage/html",
+        "coverage:md": [
+            "@coverage",
+            "php tools/clover-to-markdown.php build/coverage/clover.xml build/coverage/COVERAGE.md"
+        ]
     },
     "autoload": {
         "psr-4" :
@@ -27,6 +32,7 @@
         },
         "files":
         [
+            "src/oihana/certbot/helpers/certificateKeyType.php",
             "src/oihana/certbot/helpers/getCertbotDomains.php",
             "src/oihana/certbot/helpers/parseCertbotCertificates.php"
         ]
@@ -38,6 +44,7 @@
     },
     "require": {
         "php": ">=8.4",
+        "ext-openssl": "*",
         "oihana/php-core": "dev-main",
         "oihana/php-exceptions": "dev-main",
         "oihana/php-reflect": "dev-main",

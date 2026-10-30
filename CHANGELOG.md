@@ -9,9 +9,39 @@ and follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
+### Added
+
+- `oihana\certbot\helpers\certificateKeyType()` reads the type of key a certificate was issued
+  for, `ECDSA` or `RSA`, from the PEM text of the certificate — the first of a chain, such as
+  certbot's `fullchain.pem` — through the OpenSSL extension, without running a process. The answer
+  uses the words of the `Key Type:` line `parseCertbotCertificates()` reads, so the two compare as
+  they are; another type of key, or a text that holds no certificate, gives `null`. Taken from an
+  application built on this library, with nothing of that application left in it. The library now
+  requires `ext-openssl`.
+- Tests for `CertbotCertificate` (`isExpired()`, `isValid()`), `parseCertbotCertificates()`,
+  `getCertbotDomains()`, the `CertbotSubCommand` and `CertbotParam` enums and `CertbotOption`.
+- `composer coverage` and `composer coverage:md`, as in the other `oihana/php-*` libraries: an
+  HTML report and a Markdown summary in `build/coverage/`. The traits that run certbot have no
+  test yet.
+
 ### Changed
 
-- Dependencies: dropped the now-unused `oihana/php-system` requirement — `php-certbot` consumes no `php-system` namespace directly. Added `minimum-stability: dev` + `prefer-stable: true` so the focused split packages (`php-logging`, `php-traits`, …) pulled transitively through `oihana/php-commands` resolve cleanly now that they carry stable tags. No code or public-API change.
+- The options classes come from `oihana\options` (formerly `oihana\commands\options`), and the
+  enums from `oihana/php-enums`; `oihana/php-exceptions` and `oihana/php-signals` are required.
+- Dependencies: dropped the now-unused `oihana/php-system` requirement — `php-certbot` consumes no
+  `php-system` namespace directly. `minimum-stability: dev` with `prefer-stable: true` lets the
+  split packages pulled in through `oihana/php-commands` resolve now that they carry stable tags.
+  No public API changes.
+- `composer.lock` is no longer committed, as for a library; `.gitignore` also leaves out
+  `/build/`, `.phpunit.cache` and `.phpunit.result.cache`.
+- `README.md`: the related packages no longer list `oihana/php-system`.
+
+### Fixed
+
+- **`CertbotDeleteTrait` revoked the certificate it was asked to delete.** It ran
+  `certbot revoke` where it meant `certbot delete`: asked to remove a certificate from the
+  machine, it revoked it at the certificate authority — an operation of its own, and one that
+  cannot be undone. It now runs `certbot delete`.
 
 ---
 
