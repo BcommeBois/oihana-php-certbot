@@ -13,28 +13,22 @@ use oihana\certbot\entities\CertbotCertificate;
 use oihana\certbot\enums\CertbotParam;
 use oihana\certbot\enums\CertbotSubCommand;
 use oihana\certbot\options\CertbotCertificatesOptions;
-use oihana\certbot\options\CertbotOption;
 
+use ReflectionException;
 use function oihana\certbot\helpers\parseCertbotCertificates;
 
 /**
- * Provides support for managing SSL certificates using the `certbot certonly` command,
- * typically in webroot mode with sudo privileges. This trait includes initialization
- * logic for certificate generation options and a wrapper for executing the command.
- *
- * Expected use-case:
- * - Automate the generation (or renewal) of Let's Encrypt certificates.
- * - Leverage webroot verification method (using `--webroot -w <path>`).
- * - Use sudo context for system-wide certificate generation.
+ * Lists the certificates certbot manages, with the `certbot certificates` command, and finds one
+ * of them by its name or one of its domains.
  *
  * Example command executed:
  * ```
- * sudo certbot certonly --webroot -w /var/www/site -d example.com -d www.example.com --rsa-key-size 4096 --agree-tos --email contact@example.com --quiet
+ * sudo certbot certificates
  * ```
  *
  * Requirements:
  * - Certbot must be installed and available in the system path.
- * - Webroot path must be accessible and correspond to the domain DNS.
+ * - The command runs with sudo.
  */
 trait CertbotCertificatesTrait
 {
@@ -49,28 +43,12 @@ trait CertbotCertificatesTrait
     public ?CertbotCertificatesOptions $certbotCertificatesOptions  = null ;
 
     /**
-     * Initializes internal options for the `certbot certificate` command using an optional array.
-     * @param array $init Optional associative array of certbot options.
-     * @return static Returns the current instance for method chaining.
-     */
-    public function initializeCertbotCertificatesOptions( array $init = [] ) :static
-    {
-        $this->certbotCertificatesOptions = new CertbotCertificatesOptions
-        (
-            $init[ CertbotParam::CERTBOT ][ CertbotParam::CERTIFICATES ]
-             ?? $init[ CertbotParam::CERTBOT ]
-             ?? $init
-        ) ;
-        return $this ;
-    }
-
-    /**
-     * Returns the first matching Certbot certificate by domain or certificate name.
+     * Returns the first certificate whose name, or one of whose domains, is one of the needs.
      *
      * @param null|string|array                      $needs      A single domain/cert-name or an array of them.
      * @param array|CertbotCertificatesOptions|null  $options    Optional certbot options as array or `CertbotCertificatesOptions` instance.
      * @param bool                                   $verbose    If true, outputs the full constructed command to the console.
-     * @param bool                                   $silent     If true, suppresses any output from the command.
+     * @param bool                                   $silent     Kept for the callers: the list is read from the output, so it is never hidden from the trait.
      * @param bool                                   $dryRun     If true, simulates the execution without actually running the command. Always returns null.
      * @param string|null                            $timezone   The timezone identifier (e.g., 'Europe/Paris'). Defaults to 'Europe/Paris'.
      * @param string|null                            $dateFormat The date format string compatible with DateTime::format(). Defaults to 'Y-m-d\TH:i:s'.
@@ -118,19 +96,13 @@ trait CertbotCertificatesTrait
             $dateFormat ,
         ) ;
 
-        if( empty( $certificates ) )
-        {
-            return null ;
-        }
-
         foreach( $certificates as $certificate )
         {
             $exist = array_any
             (
                 $needs ,
                 fn( $item ) => $certificate->name === $item
-                    || ( is_array( $certificate->domains ) && in_array( $item , $certificate->domains , true ) )
-                    || ( is_string( $certificate->domains ) && $certificate->domains === $item )
+                            || in_array( $item , (array) $certificate->domains , true )
             ) ;
 
             if ( $exist )
@@ -146,10 +118,10 @@ trait CertbotCertificatesTrait
      * Check if a certificate exists for the given domain or certificate name.
      *
      * @param null|string|array                      $needs    A single domain/cert-name or an array of them.
-     * @param array|CertbotCertificatesOptions|null  $options  Optional certbot options as array or `CertbotCertOnlyOptions` instance.
+     * @param array|CertbotCertificatesOptions|null  $options  Optional certbot options as array or `CertbotCertificatesOptions` instance.
      * @param bool                                   $verbose  If true, outputs the full constructed command to the console.
-     * @param bool                                   $silent   If true, suppresses any output from the command.
-     * @param bool                                   $dryRun   If true, simulates the execution without actually running the command. Always returns 0.
+     * @param bool                                   $silent   Kept for the callers: the list is read from the output, so it is never hidden from the trait.
+     * @param bool                                   $dryRun   If true, simulates the execution without actually running the command. Always returns false.
      *
      * @return bool True if the certificate exists, false otherwise.
      *
@@ -180,12 +152,13 @@ trait CertbotCertificatesTrait
      * Checks if the certificate for the given domain or name is valid
      * at a given reference date (or now by default).
      *
-     * @param null|string|array|CertbotCertificate   $needs   A CertbotCertificate or a single domain/cert-name or an array of them.
-     * @param null|string|DateTimeInterface          $date    Reference date to test against (defaults to now).
-     * @param array|CertbotCertificatesOptions|null  $options Optional certbot options as array or `CertbotCertificatesOptions` instance.
-     * @param bool                                   $verbose Verbose output of the command.
-     * @param bool                                   $silent  Suppresses command output.
-     * @param bool                                   $dryRun  Simulates the command execution.
+     * @param null|string|array|CertbotCertificate   $needs    A CertbotCertificate or a single domain/cert-name or an array of them.
+     * @param null|string|DateTimeInterface          $date     Reference date to test against (defaults to now).
+     * @param array|CertbotCertificatesOptions|null  $options  Optional certbot options as array or `CertbotCertificatesOptions` instance.
+     * @param bool                                   $verbose  Verbose output of the command.
+     * @param bool                                   $silent   Kept for the callers: the list is read from the output, so it is never hidden from the trait.
+     * @param bool                                   $dryRun   Simulates the command execution.
+     * @param string|null                            $timezone The timezone the expiry date is read in.
      *
      * @return bool True if a valid certificate is found, false otherwise.
      *
@@ -206,7 +179,7 @@ trait CertbotCertificatesTrait
         bool                                  $verbose  = false ,
         bool                                  $silent   = false ,
         bool                                  $dryRun   = false ,
-        string|null                           $timezone   = 'Europe/Paris' ,
+        string|null                           $timezone = 'Europe/Paris' ,
     )
     : bool
     {
@@ -214,7 +187,7 @@ trait CertbotCertificatesTrait
                      ? $needs
                      : $this->certbotCertificate( $needs , $options , $verbose , $silent , $dryRun ) ;
 
-        if( $certificate === null || $certificate->expires === null )
+        if( $certificate === null )
         {
             return false ;
         }
@@ -223,24 +196,23 @@ trait CertbotCertificatesTrait
     }
 
     /**
-     * Executes the `certbot certificates` command using resolved options.
+     * Executes the `certbot certificates` command and reads its output into a list of
+     * CertbotCertificate instances.
      *
-     * Print information about the status of certificates managed by Certbot and generates a list of CertbotCertificate instances.
+     * The command runs with `sudo`, with the passed options over the default ones.
      *
-     * This method builds and runs the certbot command in `certificates` mode with `sudo`,
-     * using either the passed options or the internal default ones.
+     * @param array|CertbotCertificatesOptions|null $options Optional certbot options as array or `CertbotCertificatesOptions` instance.
+     * @param bool $verbose If true, outputs the full constructed command to the console.
+     * @param bool $silent Kept for the callers: the list is read from the output, so `--quiet`, which would empty it, is never sent.
+     * @param bool $dryRun If true, simulates the execution without actually running the command. Always returns an empty list.
+     * @param string|null $timezone The timezone identifier (e.g., 'Europe/Paris'). Defaults to 'Europe/Paris'.
+     * @param string|null $dateFormat The date format string compatible with DateTime::format(). Defaults to 'Y-m-d\TH:i:s'.
      *
-     * @param array|CertbotCertificatesOptions|null $options    Optional certbot options as array or `CertbotCertOnlyOptions` instance.
-     * @param bool                                  $verbose    If true, outputs the full constructed command to the console.
-     * @param bool                                  $silent     If true, suppresses any output from the command.
-     * @param bool                                  $dryRun     If true, simulates the execution without actually running the command. Always returns 0.
-     * @param string|null                           $timezone   The timezone identifier (e.g., 'Europe/Paris'). Defaults to 'Europe/Paris'.
-     * @param string|null                           $dateFormat The date format string compatible with DateTime::format(). Defaults to 'Y-m-d\TH:i:s'.
-     *
-     * @return array<CertbotCertificate> The list of all certificates managed by Certbot..
+     * @return array<CertbotCertificate> The list of all certificates managed by Certbot; empty when the command fails.
      *
      * @throws DateInvalidTimeZoneException
      * @throws DateMalformedStringException
+     * @throws ReflectionException
      *
      * @example
      * ```php
@@ -249,25 +221,20 @@ trait CertbotCertificatesTrait
      * echo json_encode( $certificates , JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES ) ;
      * ```
      *
-     * @see getCertbotDomains
+     * @see parseCertbotCertificates
      */
     public function certbotCertificates
     (
-        array|CertbotCertificatesOptions|null $options = null ,
-        bool                                  $verbose = false ,
-        bool                                  $silent  = false ,
-        bool                                  $dryRun  = false ,
+        array|CertbotCertificatesOptions|null $options    = null ,
+        bool                                  $verbose    = false ,
+        bool                                  $silent     = false ,
+        bool                                  $dryRun     = false ,
         string|null                           $timezone   = 'Europe/Paris' ,
         string|null                           $dateFormat = 'Y-m-d\TH:i:s'
     )
     :array
     {
-        $args = CertbotCertificatesOptions::resolve
-        (
-            $this->certbotCertificatesOptions ,
-            $options ,
-            $silent ? [ CertbotOption::QUIET => true ] : null
-        ) ;
+        $args = CertbotCertificatesOptions::resolve( $this->certbotCertificatesOptions , $options ) ;
 
         $process = $this->proc
         (
@@ -284,5 +251,25 @@ trait CertbotCertificatesTrait
         }
 
         return [] ;
+    }
+
+    /**
+     * Initializes internal options for the `certbot certificates` command using an optional array.
+     *
+     * Reads `[ 'certbot' => [ 'certificates' => [ ...options ] ] ]`, else `[ 'certbot' => [ ...options ] ]`,
+     * else the array itself.
+     *
+     * @param array $init Optional associative array of certbot options.
+     * @return static Returns the current instance for method chaining.
+     */
+    public function initializeCertbotCertificatesOptions( array $init = [] ) :static
+    {
+        $this->certbotCertificatesOptions = new CertbotCertificatesOptions
+        (
+            $init[ CertbotParam::CERTBOT ][ CertbotParam::CERTIFICATES ]
+             ?? $init[ CertbotParam::CERTBOT ]
+             ?? $init
+        ) ;
+        return $this ;
     }
 }

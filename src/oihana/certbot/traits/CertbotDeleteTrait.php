@@ -2,8 +2,6 @@
 
 namespace oihana\certbot\traits;
 
-use oihana\enums\Char;
-
 use oihana\commands\traits\CommandTrait;
 
 use oihana\certbot\enums\CertbotParam;
@@ -11,8 +9,11 @@ use oihana\certbot\enums\CertbotSubCommand;
 use oihana\certbot\options\CertbotDeleteOptions;
 use oihana\certbot\options\CertbotOption;
 
+use RuntimeException;
+
 /**
- * Provides support for delete a SSL certificates using the `certbot delete` command,
+ * Deletes a certificate from the machine with the `certbot delete` command. The certificate is not
+ * revoked: it stays valid at the certificate authority until it expires.
  *
  * Example command executed:
  * ```
@@ -21,14 +22,14 @@ use oihana\certbot\options\CertbotOption;
  *
  * Requirements:
  * - Certbot must be installed and available in the system path.
- * - The command use sudo
+ * - The command runs with sudo.
  */
 trait CertbotDeleteTrait
 {
     use CommandTrait ;
 
     /**
-     * Holds the default options for the `certbot renew` command.
+     * Holds the default options for the `certbot delete` command.
      * These can be preconfigured and reused across multiple invocations.
      *
      * @var CertbotDeleteOptions|null
@@ -36,35 +37,21 @@ trait CertbotDeleteTrait
     public ?CertbotDeleteOptions $certbotDeleteOptions  = null ;
 
     /**
-     * Initializes internal options for the `certbot delete` command using an optional array.
-     * @param array $init Optional associative array of certbot options.
-     * @return static Returns the current instance for method chaining.
-     */
-    public function initializeCertbotDeleteOptions( array $init = [] ) :static
-    {
-        $this->certbotDeleteOptions = new CertbotDeleteOptions
-        (
-            $init[ CertbotParam::CERTBOT ][ CertbotParam::DELETE ]
-             ?? $init[ CertbotParam::CERTBOT ]
-             ?? $init
-        ) ;
-        return $this ;
-    }
-
-    /**
-     * Attempt to delete a certificate.
+     * Deletes a certificate from the machine.
      *
-     * @param null|string|array                $domains     Optional name of the certificate to renew.
-     * @param array|CertbotDeleteOptions|null  $options     Optional certbot options as array or `CertbotRevokeOptions` instance.
-     * @param bool                             $verbose     Verbose output of the command.
-     * @param bool                             $silent      Suppresses command output.
-     * @param bool                             $dryRun      Simulates the command execution.
+     * @param null|string|array               $domains The name of the certificate to delete; of a list, the first.
+     * @param array|CertbotDeleteOptions|null $options Optional certbot options as array or `CertbotDeleteOptions` instance.
+     * @param bool                            $verbose Verbose output of the command.
+     * @param bool                            $silent  Hides the output of the command.
+     * @param bool                            $dryRun  Simulates the command execution.
      *
      * @return int Exit code of the executed command. `0` means success.
      *
+     * @throws RuntimeException If the command fails and dryRun is disabled.
+     *
      * @example
      * ```php
-     * $this->certbotRenew( 'example.com' ) ;
+     * $this->certbotDelete( 'example.com' ) ;
      * ```
      */
     public function certbotDelete
@@ -81,16 +68,11 @@ trait CertbotDeleteTrait
         {
             $domains = $domains[0] ?? null ;
         }
-        else if( is_string( $domains ) && $domains == Char::EMPTY )
-        {
-            $domains = null ;
-        }
 
         $args = CertbotDeleteOptions::resolve
         (
             $this->certbotDeleteOptions , $options ,
-            !empty( $domains )     ? [ CertbotOption::CERT_NAME => $domains ] : null ,
-            $silent                ? [ CertbotOption::QUIET => true         ] : null ,
+            !empty( $domains ) ? [ CertbotOption::CERT_NAME => $domains ] : null ,
         ) ;
 
         return $this->system
@@ -102,5 +84,25 @@ trait CertbotDeleteTrait
             sudo    : true ,
             dryRun  : $dryRun
         ) ;
+    }
+
+    /**
+     * Initializes internal options for the `certbot delete` command using an optional array.
+     *
+     * Reads `[ 'certbot' => [ 'delete' => [ ...options ] ] ]`, else `[ 'certbot' => [ ...options ] ]`,
+     * else the array itself.
+     *
+     * @param array $init Optional associative array of certbot options.
+     * @return static Returns the current instance for method chaining.
+     */
+    public function initializeCertbotDeleteOptions( array $init = [] ) :static
+    {
+        $this->certbotDeleteOptions = new CertbotDeleteOptions
+        (
+            $init[ CertbotParam::CERTBOT ][ CertbotParam::DELETE ]
+             ?? $init[ CertbotParam::CERTBOT ]
+             ?? $init
+        ) ;
+        return $this ;
     }
 }

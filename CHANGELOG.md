@@ -20,9 +20,12 @@ and follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   requires `ext-openssl`.
 - Tests for `CertbotCertificate` (`isExpired()`, `isValid()`), `parseCertbotCertificates()`,
   `getCertbotDomains()`, the `CertbotSubCommand` and `CertbotParam` enums and `CertbotOption`.
+- Tests for the traits that run certbot — `CertbotTrait`, `CertbotCertificatesTrait`,
+  `CertbotCertOnlyTrait`, `CertbotDeleteTrait`, `CertbotRenewTrait`, `CertbotRevokeTrait` — and for
+  the command lines `CertbotOptions` and `CertbotCertOnlyOptions` write. A recording double replaces
+  `system()` and `proc()`, so they run without certbot and without sudo.
 - `composer coverage` and `composer coverage:md`, as in the other `oihana/php-*` libraries: an
-  HTML report and a Markdown summary in `build/coverage/`. The traits that run certbot have no
-  test yet.
+  HTML report and a Markdown summary in `build/coverage/`. The library is covered in full.
 
 ### Changed
 
@@ -35,6 +38,17 @@ and follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - `composer.lock` is no longer committed, as for a library; `.gitignore` also leaves out
   `/build/`, `.phpunit.cache` and `.phpunit.result.cache`.
 - `README.md`: the related packages no longer list `oihana/php-system`.
+- The traits' documentation tells what each command does: the delete, revoke and certificates
+  traits had kept the words of another command, `CertbotCertOnlyTrait` announced a dry run by
+  default, and two traits began with leftover shell lines. Members are in order.
+- `$silent` only hides the output of the command. The traits also asked for `--quiet`, which never
+  reached certbot: none of the options classes but `CertbotCertOnlyOptions` holds it. The request is
+  gone, and `certbotCertificates()` documents why it must never send `--quiet`: the list is read
+  from the very output it would empty.
+- Dead code is gone: an empty-string check in `certbotDelete()` and `certbotRevoke()`, a redundant
+  check for an empty list in `certbotCertificate()` and one for a missing expiry date in
+  `certbotCertificateIsValid()`. A certificate's domains are matched as a list, whether the
+  certificate holds a list or a single string. No behaviour changes.
 
 ### Fixed
 
@@ -42,6 +56,12 @@ and follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `certbot revoke` where it meant `certbot delete`: asked to remove a certificate from the
   machine, it revoked it at the certificate authority — an operation of its own, and one that
   cannot be undone. It now runs `certbot delete`.
+- **`certbotRenew()` renewed every certificate when asked for one.** It tested an undefined
+  variable instead of the name it was given, so `--cert-name` never reached certbot, which then
+  renewed every certificate close to its expiry. The name is now passed. The name is the
+  certificate's name, as `certbot certificates` lists it — which is not always its first domain.
+- `certbotRenew( …, assertable: true )` refused an unknown certificate with a garbled message
+  (“The domains … don' exist.”); it now says “The certificate … does not exist.”
 
 ---
 

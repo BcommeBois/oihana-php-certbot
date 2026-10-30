@@ -2,24 +2,17 @@
 
 namespace oihana\certbot\traits;
 
-use oihana\enums\Char;
-
 use oihana\certbot\enums\CertbotParam;
 use oihana\certbot\enums\CertbotSubCommand;
 use oihana\certbot\options\CertbotRevokeOptions;
 use oihana\certbot\options\CertbotOption;
 
-// sudo certbot revoke $CERTDOM --cert-path /etc/letsencrypt/live/$CERT/fullchain.pem --quiet
-//
-//     # Remove folders and files
-//     rm -rf /etc/letsencrypt/archive/$CERT
-//     rm -rf /etc/letsencrypt/live/$CERT
-//     rm -rf /etc/letsencrypt/renewal/$CERT.conf
+use RuntimeException;
 
 /**
- * Provides support for revoke SSL certificates using the `certbot revoke` command,
- *
- * The 'revoke' subcommand will attempt to revoke any certificates previously obtained.
+ * Revokes a certificate at the certificate authority with the `certbot revoke` command. This
+ * cannot be undone: a revoked certificate is refused by browsers from then on. To only remove a
+ * certificate from the machine, see CertbotDeleteTrait.
  *
  * Example command executed:
  * ```
@@ -28,6 +21,7 @@ use oihana\certbot\options\CertbotOption;
  *
  * Requirements:
  * - Certbot must be installed and available in the system path.
+ * - The command runs with sudo.
  */
 trait CertbotRevokeTrait
 {
@@ -42,36 +36,22 @@ trait CertbotRevokeTrait
     public ?CertbotRevokeOptions $certbotRevokeOptions  = null ;
 
     /**
-     * Initializes internal options for the `certbot revoke` command using an optional array.
-     * @param array $init Optional associative array of certbot options.
-     * @return static Returns the current instance for method chaining.
-     */
-    public function initializeCertbotRevokeOptions( array $init = [] ) :static
-    {
-        $this->certbotRevokeOptions = new CertbotRevokeOptions
-        (
-            $init[ CertbotParam::CERTBOT ][ CertbotParam::REVOKE ]
-            ?? $init[ CertbotParam::CERTBOT ]
-            ?? $init
-        ) ;
-        return $this ;
-    }
-
-    /**
-     * Attempt to renew any certificates previously obtained.
+     * Revokes a certificate.
      *
-     * @param null|string|array                $domains     Optional name of the certificate to renew.
-     * @param ?bool                            $deleteAfter Enforce to delete or not-delete the certificate after revoking them. If null, the default behavior is applied.
-     * @param array|CertbotRevokeOptions|null  $options     Optional certbot options as array or `CertbotRevokeOptions` instance.
-     * @param bool                             $verbose     Verbose output of the command.
-     * @param bool                             $silent      Suppresses command output.
-     * @param bool                             $dryRun      Simulates the command execution.
+     * @param null|string|array               $domains     The name of the certificate to revoke; of a list, the first.
+     * @param ?bool                           $deleteAfter True deletes the certificate from the machine after revoking it, false keeps it; null leaves certbot's own default.
+     * @param array|CertbotRevokeOptions|null $options     Optional certbot options as array or `CertbotRevokeOptions` instance.
+     * @param bool                            $verbose     Verbose output of the command.
+     * @param bool                            $silent      Hides the output of the command.
+     * @param bool                            $dryRun      Simulates the command execution.
      *
      * @return int Exit code of the executed command. `0` means success.
      *
+     * @throws RuntimeException If the command fails and dryRun is disabled.
+     *
      * @example
      * ```php
-     * $this->certbotRenew( 'example.com' ) ;
+     * $this->certbotRevoke( 'example.com' , deleteAfter : true ) ;
      * ```
      */
     public function certbotRevoke
@@ -89,18 +69,13 @@ trait CertbotRevokeTrait
         {
             $domains = $domains[0] ?? null ;
         }
-        else if( is_string( $domains ) && $domains == Char::EMPTY )
-        {
-            $domains = null ;
-        }
 
         $args = CertbotRevokeOptions::resolve
         (
             $this->certbotRevokeOptions , $options ,
-            !empty( $domains )     ? [ CertbotOption::CERT_NAME => $domains          ] : null ,
-            $silent                ? [ CertbotOption::QUIET => true                  ] : null ,
-            $deleteAfter === true  ? [ CertbotOption::DELETE_AFTER_REVOKE    => true ] : null ,
-            $deleteAfter === false ? [ CertbotOption::NO_DELETE_AFTER_REVOKE => true ] : null ,
+            !empty( $domains )     ? [ CertbotOption::CERT_NAME              => $domains ] : null ,
+            $deleteAfter === true  ? [ CertbotOption::DELETE_AFTER_REVOKE    => true     ] : null ,
+            $deleteAfter === false ? [ CertbotOption::NO_DELETE_AFTER_REVOKE => true     ] : null ,
         ) ;
 
         return $this->system
@@ -112,5 +87,25 @@ trait CertbotRevokeTrait
             sudo    : true ,
             dryRun  : $dryRun
         ) ;
+    }
+
+    /**
+     * Initializes internal options for the `certbot revoke` command using an optional array.
+     *
+     * Reads `[ 'certbot' => [ 'revoke' => [ ...options ] ] ]`, else `[ 'certbot' => [ ...options ] ]`,
+     * else the array itself.
+     *
+     * @param array $init Optional associative array of certbot options.
+     * @return static Returns the current instance for method chaining.
+     */
+    public function initializeCertbotRevokeOptions( array $init = [] ) :static
+    {
+        $this->certbotRevokeOptions = new CertbotRevokeOptions
+        (
+            $init[ CertbotParam::CERTBOT ][ CertbotParam::REVOKE ]
+            ?? $init[ CertbotParam::CERTBOT ]
+            ?? $init
+        ) ;
+        return $this ;
     }
 }
