@@ -34,6 +34,6 @@ final class CertbotOptionsTest extends TestCase
             'nonInteractive' => true ,
         ]) ;
 
-        $this->assertSame( '--cert-name "example.com" -d "example.com" -d "www.example.com" -n' , (string) $options ) ;
+        $this->assertSame( "--cert-name 'example.com' -d 'example.com' -d 'www.example.com' -n" , (string) $options ) ;
     }
 }

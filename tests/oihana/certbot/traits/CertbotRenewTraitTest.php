@@ -82,14 +82,14 @@ final class CertbotRenewTraitTest extends TestCase
     {
         $this->certbot->certbotRenew( 'example.com' ) ;
 
-        $this->assertSame( '--cert-name "example.com"' , $this->certbot->calls[ 0 ][ 2 ] ) ;
+        $this->assertSame( "--cert-name 'example.com'" , $this->certbot->calls[ 0 ][ 2 ] ) ;
     }
 
     public function testOnlyTheFirstNameOfAListIsKept() :void
     {
         $this->certbot->certbotRenew( [ 'example.com' , 'www.example.com' ] ) ;
 
-        $this->assertSame( '--cert-name "example.com"' , $this->certbot->calls[ 0 ][ 2 ] ) ;
+        $this->assertSame( "--cert-name 'example.com'" , $this->certbot->calls[ 0 ][ 2 ] ) ;
     }
 
     public function testAnEmptyNameSendsNoCertName() :void
@@ -106,7 +106,7 @@ final class CertbotRenewTraitTest extends TestCase
 
         $this->certbot->certbotRenew( 'example.com' , [ 'config' => '/c.ini' ] ) ;
 
-        $this->assertSame( '--force-renewal --cert-name "example.com" -c "/c.ini"' , $this->certbot->calls[ 0 ][ 2 ] ) ;
+        $this->assertSame( "--force-renewal --cert-name 'example.com' -c '/c.ini'" , $this->certbot->calls[ 0 ][ 2 ] ) ;
     }
 
     public function testTheFlagsReachTheCommand() :void
@@ -115,7 +115,7 @@ final class CertbotRenewTraitTest extends TestCase
 
         $this->assertSame
         (
-            [ 'system' , CertbotSubCommand::RENEW , '--cert-name "example.com"' , true , true , true ] ,
+            [ 'system' , CertbotSubCommand::RENEW , "--cert-name 'example.com'" , true , true , true ] ,
             $this->certbot->calls[ 0 ]
         ) ;
     }
@@ -134,7 +134,7 @@ final class CertbotRenewTraitTest extends TestCase
         $this->certbot->certbotRenew( 'www.example.com' , assertable : true ) ;
 
         $this->assertSame( [ 'proc' , 'system' ] , array_column( $this->certbot->calls , 0 ) ) ;
-        $this->assertSame( '--cert-name "www.example.com"' , $this->certbot->calls[ 1 ][ 2 ] ) ;
+        $this->assertSame( "--cert-name 'www.example.com'" , $this->certbot->calls[ 1 ][ 2 ] ) ;
     }
 
     public function testAnAssertedCertificateThatDoesNotExistIsRefused() :void

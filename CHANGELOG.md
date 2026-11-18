@@ -50,6 +50,12 @@ and follows [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   `certbotCertificateIsValid()`. A certificate's domains are matched as a list, whether the
   certificate holds a list or a single string. No behaviour changes.
 
+- The command lines carry each value between single quotes, as `oihana/php-files` now writes
+  them: `--cert-name 'example.com' -d 'example.com' -w '/var/www/acme'`. Between the double quotes
+  it wrote before, the shell still expanded `$` and ran what stood between backquotes; a domain, a
+  path or an e-mail address now reaches certbot exactly as it was set. Only the tests, which
+  compare the lines written, change here.
+
 ### Fixed
 
 - **`CertbotDeleteTrait` revoked the certificate it was asked to delete.** It ran

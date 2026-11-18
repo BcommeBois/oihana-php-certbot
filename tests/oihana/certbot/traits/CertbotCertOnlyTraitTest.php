@@ -57,7 +57,7 @@ final class CertbotCertOnlyTraitTest extends TestCase
 
         $this->assertSame
         (
-            [ [ 'system' , CertbotSubCommand::CERT_ONLY , '--cert-name "example.com"' , false , true , false ] ] ,
+            [ [ 'system' , CertbotSubCommand::CERT_ONLY , "--cert-name 'example.com'" , false , true , false ] ] ,
             $this->certbot->calls
         ) ;
     }
@@ -84,7 +84,7 @@ final class CertbotCertOnlyTraitTest extends TestCase
 
         $this->assertSame
         (
-            '--cert-name "example.com" --webroot -w "/var/www/acme" -d "example.com" -d "www.example.com" --agree-tos -m "contact@example.com"' ,
+            "--cert-name 'example.com' --webroot -w '/var/www/acme' -d 'example.com' -d 'www.example.com' --agree-tos -m 'contact@example.com'" ,
             $this->certbot->calls[ 0 ][ 2 ]
         ) ;
     }

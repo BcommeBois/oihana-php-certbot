@@ -99,7 +99,7 @@ final class CertbotCertificatesTraitTest extends TestCase
 
         $this->assertSame
         (
-            [ [ 'proc' , CertbotSubCommand::CERTIFICATES , '--cert-name "example.com" -c "/etc/certbot.ini"' , true , true ] ] ,
+            [ [ 'proc' , CertbotSubCommand::CERTIFICATES , "--cert-name 'example.com' -c '/etc/certbot.ini'" , true , true ] ] ,
             $this->certbot->calls
         ) ;
     }
@@ -186,7 +186,7 @@ final class CertbotCertificatesTraitTest extends TestCase
 
         $this->assertSame
         (
-            [ [ 'proc' , CertbotSubCommand::CERTIFICATES , '--cert-name "example.com"' , true , true ] ] ,
+            [ [ 'proc' , CertbotSubCommand::CERTIFICATES , "--cert-name 'example.com'" , true , true ] ] ,
             $this->certbot->calls
         ) ;
     }
@@ -219,7 +219,7 @@ final class CertbotCertificatesTraitTest extends TestCase
     {
         $this->certbot->certbotCertificateExists( 'example.com' , [ 'certName' => 'example.com' ] , dryRun : true ) ;
 
-        $this->assertSame( '--cert-name "example.com"' , $this->certbot->calls[ 0 ][ 2 ] ) ;
+        $this->assertSame( "--cert-name 'example.com'" , $this->certbot->calls[ 0 ][ 2 ] ) ;
         $this->assertTrue( $this->certbot->calls[ 0 ][ 4 ] ) ;
     }
 
@@ -259,7 +259,7 @@ final class CertbotCertificatesTraitTest extends TestCase
     {
         $this->certbot->certbotCertificateIsValid( 'example.com' , '2025-10-01' , [ 'certName' => 'example.com' ] , dryRun : true ) ;
 
-        $this->assertSame( '--cert-name "example.com"' , $this->certbot->calls[ 0 ][ 2 ] ) ;
+        $this->assertSame( "--cert-name 'example.com'" , $this->certbot->calls[ 0 ][ 2 ] ) ;
         $this->assertTrue( $this->certbot->calls[ 0 ][ 4 ] ) ;
     }
 }

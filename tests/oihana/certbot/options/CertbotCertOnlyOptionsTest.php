@@ -44,8 +44,8 @@ final class CertbotCertOnlyOptionsTest extends TestCase
 
         $this->assertSame
         (
-            '--cert-name "example.com" --key-type "ecdsa" --webroot -w "/var/www/acme" -d "example.com" -d "www.example.com" '
-            . '--agree-tos --rsa-key-size 4096 -m "contact@example.com" --dry-run -q' ,
+            "--cert-name 'example.com' --key-type 'ecdsa' --webroot -w '/var/www/acme' -d 'example.com' -d 'www.example.com' "
+            . "--agree-tos --rsa-key-size 4096 -m 'contact@example.com' --dry-run -q" ,
             (string) $options
         ) ;
     }

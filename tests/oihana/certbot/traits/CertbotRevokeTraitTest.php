@@ -57,7 +57,7 @@ final class CertbotRevokeTraitTest extends TestCase
 
         $this->assertSame
         (
-            [ [ 'system' , CertbotSubCommand::REVOKE , '--cert-name "example.com"' , false , true , false ] ] ,
+            [ [ 'system' , CertbotSubCommand::REVOKE , "--cert-name 'example.com'" , false , true , false ] ] ,
             $this->certbot->calls
         ) ;
     }
@@ -66,7 +66,7 @@ final class CertbotRevokeTraitTest extends TestCase
     {
         $this->certbot->certbotRevoke( [ 'example.com' , 'www.example.com' ] ) ;
 
-        $this->assertSame( '--cert-name "example.com"' , $this->certbot->calls[ 0 ][ 2 ] ) ;
+        $this->assertSame( "--cert-name 'example.com'" , $this->certbot->calls[ 0 ][ 2 ] ) ;
     }
 
     public function testNoNameSendsNoCertName() :void
@@ -82,14 +82,14 @@ final class CertbotRevokeTraitTest extends TestCase
     {
         $this->certbot->certbotRevoke( 'example.com' , deleteAfter : true ) ;
 
-        $this->assertSame( '--delete-after-revoke --cert-name "example.com"' , $this->certbot->calls[ 0 ][ 2 ] ) ;
+        $this->assertSame( "--delete-after-revoke --cert-name 'example.com'" , $this->certbot->calls[ 0 ][ 2 ] ) ;
     }
 
     public function testKeepAfterRevoking() :void
     {
         $this->certbot->certbotRevoke( 'example.com' , deleteAfter : false ) ;
 
-        $this->assertSame( '--no-delete-after-revoke --cert-name "example.com"' , $this->certbot->calls[ 0 ][ 2 ] ) ;
+        $this->assertSame( "--no-delete-after-revoke --cert-name 'example.com'" , $this->certbot->calls[ 0 ][ 2 ] ) ;
     }
 
     public function testTheDefaultAndPassedOptionsMeet() :void
@@ -100,7 +100,7 @@ final class CertbotRevokeTraitTest extends TestCase
 
         $this->assertSame
         (
-            '--cert-path "/live/fullchain.pem" --reason "superseded" --cert-name "example.com"' ,
+            "--cert-path '/live/fullchain.pem' --reason 'superseded' --cert-name 'example.com'" ,
             $this->certbot->calls[ 0 ][ 2 ]
         ) ;
     }
@@ -111,7 +111,7 @@ final class CertbotRevokeTraitTest extends TestCase
 
         $this->assertSame
         (
-            [ 'system' , CertbotSubCommand::REVOKE , '--cert-name "example.com"' , true , true , true ] ,
+            [ 'system' , CertbotSubCommand::REVOKE , "--cert-name 'example.com'" , true , true , true ] ,
             $this->certbot->calls[ 0 ]
         ) ;
     }

@@ -57,7 +57,7 @@ final class CertbotDeleteTraitTest extends TestCase
 
         $this->assertSame
         (
-            [ [ 'system' , CertbotSubCommand::DELETE , '--cert-name "example.com"' , false , true , false ] ] ,
+            [ [ 'system' , CertbotSubCommand::DELETE , "--cert-name 'example.com'" , false , true , false ] ] ,
             $this->certbot->calls
         ) ;
     }
@@ -66,7 +66,7 @@ final class CertbotDeleteTraitTest extends TestCase
     {
         $this->certbot->certbotDelete( [ 'example.com' , 'www.example.com' ] ) ;
 
-        $this->assertSame( '--cert-name "example.com"' , $this->certbot->calls[ 0 ][ 2 ] ) ;
+        $this->assertSame( "--cert-name 'example.com'" , $this->certbot->calls[ 0 ][ 2 ] ) ;
     }
 
     public function testNoNameSendsNoCertName() :void
@@ -84,7 +84,7 @@ final class CertbotDeleteTraitTest extends TestCase
 
         $this->certbot->certbotDelete( 'example.com' , [ 'config' => '/c.ini' ] ) ;
 
-        $this->assertSame( '--cert-name "example.com" -c "/c.ini"' , $this->certbot->calls[ 0 ][ 2 ] ) ;
+        $this->assertSame( "--cert-name 'example.com' -c '/c.ini'" , $this->certbot->calls[ 0 ][ 2 ] ) ;
     }
 
     public function testTheFlagsReachTheCommand() :void
@@ -93,7 +93,7 @@ final class CertbotDeleteTraitTest extends TestCase
 
         $this->assertSame
         (
-            [ 'system' , CertbotSubCommand::DELETE , '--cert-name "example.com"' , true , true , true ] ,
+            [ 'system' , CertbotSubCommand::DELETE , "--cert-name 'example.com'" , true , true , true ] ,
             $this->certbot->calls[ 0 ]
         ) ;
     }
